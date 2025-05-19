@@ -10,12 +10,14 @@ local dragStart, startPos, resizeStart, startSize
 local verified = false
 local placeId = 16747526331
 
-local gui = Instance.new("ScreenGui", game.CoreGui)
+local gui = Instance.new("ScreenGui")
 gui.Name = "LebroHub"
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 gui.ResetOnSpawn = false
+gui.Parent = game.CoreGui or plr.PlayerGui
 
 local function notify(t, c, d)
+    if not gui.Parent then print("[LebroHub] No GUI parent") return end
     print("[LebroHub] "..t..": "..c)
     local n = Instance.new("Frame", gui)
     n.Size = UDim2.new(0, 250, 0, 70)
@@ -28,7 +30,7 @@ local function notify(t, c, d)
     nt.Size = UDim2.new(1, -10, 0, 20)
     nt.Position = UDim2.new(0, 5, 0, 5)
     nt.BackgroundTransparency = 1
-    nt.Text = t
+    nt.Text = t or "Error"
     nt.TextColor3 = Color3.fromRGB(255, 255, 255)
     nt.TextSize = 14
     nt.Font = Enum.Font.SourceSansBold
@@ -37,7 +39,7 @@ local function notify(t, c, d)
     nc.Size = UDim2.new(1, -10, 0, 40)
     nc.Position = UDim2.new(0, 5, 0, 25)
     nc.BackgroundTransparency = 1
-    nc.Text = c
+    nc.Text = c or "Unknown error"
     nc.TextColor3 = Color3.fromRGB(200, 200, 200)
     nc.TextSize = 12
     nc.Font = Enum.Font.SourceSans
@@ -181,7 +183,7 @@ crt.TextXAlignment = Enum.TextXAlignment.Right
 crt.MouseButton1Click:Connect(function() setclipboard("@Xmkxk") notify("Success", "Telegram copied!", 5) print("[LebroHub] Telegram copied") end)
 
 kb.MouseButton1Click:Connect(function()
-    print("[LebroHub] Key: "..ki.Text)
+    print("[LebroHub] Key: "..(ki.Text or "nil"))
     if ki.Text == key then
         verified = true
         print("[LebroHub] Key OK")
@@ -237,6 +239,7 @@ btn("af", "🔧 Auto Farm: ", function(s)
                     end
                 else
                     print("[LebroHub] No Plots")
+                    notify("Error", "Plots not found!", 5)
                 end
                 task.wait(0.5)
             end
@@ -255,6 +258,7 @@ btn("is", "🌱 Infinite Seeds: ", function(s)
                     g.Seeds.Value = 999999
                 else
                     print("[LebroHub] No Seeds GUI")
+                    notify("Error", "Seeds GUI not found!", 5)
                 end
                 task.wait(1)
             end
@@ -277,11 +281,13 @@ btn("aw", "💧 Auto Water: ", function(s)
                                 e.WaterPlant:FireServer(v)
                             else
                                 print("[LebroHub] No WaterPlant")
+                                notify("Error", "WaterPlant event not found!", 5)
                             end
                         end
                     end
                 else
                     print("[LebroHub] No Plots")
+                    notify("Error", "Plots not found!", 5)
                 end
                 task.wait(1)
             end
@@ -299,6 +305,7 @@ btn("sb", "⚡ Speed Boost: ", function(s)
                     plr.Character.Humanoid.WalkSpeed = 32
                 else
                     print("[LebroHub] No Humanoid")
+                    notify("Error", "Humanoid not found!", 5)
                 end
                 task.wait(0.1)
             end
@@ -324,11 +331,13 @@ btn("ig", "🌿 Instant Grow: ", function(s)
                                 e.ForceGrow:FireServer(v)
                             else
                                 print("[LebroHub] No ForceGrow")
+                                notify("Error", "ForceGrow event not found!", 5)
                             end
                         end
                     end
                 else
                     print("[LebroHub] No Plots")
+                    notify("Error", "Plots not found!", 5)
                 end
                 task.wait(0.5)
             end
@@ -347,6 +356,7 @@ btn("im", "💵 Infinite Money: ", function(s)
                     g.Money.Value = 999999
                 else
                     print("[LebroHub] No Money GUI")
+                    notify("Error", "Money GUI not found!", 5)
                 end
                 task.wait(1)
             end
@@ -365,6 +375,7 @@ btn("au", "⬆ Auto Upgrade: ", function(s)
                     e.Upgrade:FireServer()
                 else
                     print("[LebroHub] No Upgrade")
+                    notify("Error", "Upgrade event not found!", 5)
                 end
                 task.wait(2)
             end
@@ -398,13 +409,14 @@ sa.MouseButton1Click:Connect(function()
                         e.SellCrop:FireServer(i)
                     else
                         print("[LebroHub] No SellCrop")
+                        notify("Error", "SellCrop event not found!", 5)
                     end
                 end
             end
             notify("Success", "Crops sold!", 5)
         else
             print("[LebroHub] No Backpack")
-            notify("Error", "No Backpack!", 5)
+            notify("Error", "Backpack not found!", 5)
         end
     end)
 end)
