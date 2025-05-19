@@ -10,8 +10,6 @@ local dragStart, startPos, resizeStart, startSize
 local verified = false
 local placeId = 16747526331
 
-if game.PlaceId ~= placeId then plr:Kick("LebroHub only for Grow a Garden!") return end
-
 local gui = Instance.new("ScreenGui", game.CoreGui)
 gui.Name = "LebroHub"
 gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
