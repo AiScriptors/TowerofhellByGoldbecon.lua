@@ -1,0 +1,521 @@
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
+local RS = game:GetService("RunService")
+local RepS = game:GetService("ReplicatedStorage")
+local plr = Players.LocalPlayer
+local key = "GoldBecon1488"
+local min, drag, resize = false, false, false
+local dragStart, startPos, resizeStart, startSize
+local verified = false
+local placeId = 16747526331
+
+if game.PlaceId ~= placeId then plr:Kick("LebroHub only for Grow a Garden!") return end
+
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "LebroHub"
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.ResetOnSpawn = false
+
+local function notify(t, c, d)
+    print("[LebroHub] "..t..": "..c)
+    local n = Instance.new("Frame", gui)
+    n.Size = UDim2.new(0, 250, 0, 70)
+    n.Position = UDim2.new(1, -260, 1, -80)
+    n.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    n.BackgroundTransparency = 0.3
+    local c = Instance.new("UICorner", n)
+    c.CornerRadius = UDim.new(0, 8)
+    local nt = Instance.new("TextLabel", n)
+    nt.Size = UDim2.new(1, -10, 0, 20)
+    nt.Position = UDim2.new(0, 5, 0, 5)
+    nt.BackgroundTransparency = 1
+    nt.Text = t
+    nt.TextColor3 = Color3.fromRGB(255, 255, 255)
+    nt.TextSize = 14
+    nt.Font = Enum.Font.SourceSansBold
+    nt.TextXAlignment = Enum.TextXAlignment.Left
+    local nc = Instance.new("TextLabel", n)
+    nc.Size = UDim2.new(1, -10, 0, 40)
+    nc.Position = UDim2.new(0, 5, 0, 25)
+    nc.BackgroundTransparency = 1
+    nc.Text = c
+    nc.TextColor3 = Color3.fromRGB(200, 200, 200)
+    nc.TextSize = 12
+    nc.Font = Enum.Font.SourceSans
+    nc.TextXAlignment = Enum.TextXAlignment.Left
+    nc.TextWrapped = true
+    TweenService:Create(n, TweenInfo.new(0.3), {Position = UDim2.new(1, -260, 1, -80)}):Play()
+    wait(d or 5)
+    TweenService:Create(n, TweenInfo.new(0.3), {Position = UDim2.new(1, 0, 1, -80)}):Play()
+    wait(0.3)
+    n:Destroy()
+end
+
+local kf = Instance.new("Frame", gui)
+kf.Size = UDim2.new(0, 280, 0, 180)
+kf.Position = UDim2.new(0.5, -140, 0.5, -90)
+kf.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+kf.BackgroundTransparency = 0.3
+local kc = Instance.new("UICorner", kf)
+kc.CornerRadius = UDim.new(0, 10)
+local kt = Instance.new("TextLabel", kf)
+kt.Size = UDim2.new(1, 0, 0, 30)
+kt.Position = UDim2.new(0, 0, 0, 10)
+kt.BackgroundTransparency = 1
+kt.Text = "LebroHub - Key"
+kt.TextColor3 = Color3.fromRGB(200, 200, 255)
+kt.TextSize = 16
+kt.Font = Enum.Font.SourceSansBold
+kt.TextXAlignment = Enum.TextXAlignment.Center
+local ki = Instance.new("TextBox", kf)
+ki.Size = UDim2.new(1, -20, 0, 30)
+ki.Position = UDim2.new(0, 10, 0, 50)
+ki.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+ki.BackgroundTransparency = 0.5
+ki.PlaceholderText = "Enter key..."
+ki.TextColor3 = Color3.fromRGB(255, 255, 255)
+ki.TextSize = 14
+ki.Font = Enum.Font.SourceSans
+local kb = Instance.new("TextButton", kf)
+kb.Size = UDim2.new(1, -20, 0, 30)
+kb.Position = UDim2.new(0, 10, 0, 90)
+kb.BackgroundColor3 = Color3.fromRGB(50, 50, 100)
+kb.BackgroundTransparency = 0.5
+kb.Text = "Verify"
+kb.TextColor3 = Color3.fromRGB(255, 255, 255)
+kb.TextSize = 14
+kb.Font = Enum.Font.SourceSansBold
+local tb = Instance.new("TextButton", kf)
+tb.Size = UDim2.new(1, -20, 0, 20)
+tb.Position = UDim2.new(0, 10, 0, 130)
+tb.BackgroundTransparency = 1
+tb.Text = "Telegram: @Xmkxk"
+tb.TextColor3 = Color3.fromRGB(150, 150, 255)
+tb.TextSize = 12
+tb.Font = Enum.Font.SourceSans
+tb.TextXAlignment = Enum.TextXAlignment.Center
+local kbc = Instance.new("UICorner", kb)
+kbc.CornerRadius = UDim.new(0, 6)
+kb.MouseEnter:Connect(function() TweenService:Create(kb, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(70, 70, 120)}):Play() end)
+kb.MouseLeave:Connect(function() TweenService:Create(kb, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 100)}):Play() end)
+tb.MouseButton1Click:Connect(function() setclipboard("@Xmkxk") notify("Success", "Telegram copied!", 5) print("[LebroHub] Telegram copied") end)
+
+local mf = Instance.new("Frame", gui)
+mf.Size = UDim2.new(0, 400, 0, 300)
+mf.Position = UDim2.new(0.5, -200, 0.5, -150)
+mf.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+mf.BackgroundTransparency = 0.3
+mf.Visible = false
+local mc = Instance.new("UICorner", mf)
+mc.CornerRadius = UDim.new(0, 10)
+local sb = Instance.new("Frame", mf)
+sb.Size = UDim2.new(0, 60, 1, 0)
+sb.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+sb.BackgroundTransparency = 0.5
+local sc = Instance.new("UICorner", sb)
+sc.CornerRadius = UDim.new(0, 10)
+local sl = Instance.new("UIListLayout", sb)
+sl.Padding = UDim.new(0, 10)
+sl.SortOrder = Enum.SortOrder.LayoutOrder
+local af = Instance.new("ImageLabel", sb)
+af.Size = UDim2.new(0, 40, 0, 40)
+af.Position = UDim2.new(0, 10, 0, 10)
+af.BackgroundTransparency = 1
+af.Image = Players:GetUserThumbnailAsync(plr.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
+local ac = Instance.new("UICorner", af)
+ac.CornerRadius = UDim.new(1, 0)
+local hb = Instance.new("TextButton", sb)
+hb.Size = UDim2.new(1, 0, 0, 40)
+hb.BackgroundTransparency = 1
+hb.Text = "🏠"
+hb.TextColor3 = Color3.fromRGB(255, 255, 255)
+hb.TextSize = 20
+hb.Font = Enum.Font.SourceSansBold
+hb.MouseEnter:Connect(function() TweenService:Create(hb, TweenInfo.new(0.2), {BackgroundTransparency = 0.8, BackgroundColor3 = Color3.fromRGB(50, 50, 100)}):Play() end)
+hb.MouseLeave:Connect(function() TweenService:Create(hb, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play() end)
+local cf = Instance.new("Frame", mf)
+cf.Size = UDim2.new(1, -70, 1, -80)
+cf.Position = UDim2.new(0, 70, 0, 40)
+cf.BackgroundTransparency = 1
+local cl = Instance.new("UIListLayout", cf)
+cl.Padding = UDim.new(0, 10)
+cl.SortOrder = Enum.SortOrder.LayoutOrder
+local t = Instance.new("TextLabel", mf)
+t.Size = UDim2.new(1, 0, 0, 30)
+t.Position = UDim2.new(0, 70, 0, 5)
+t.BackgroundTransparency = 1
+t.Text = "LebroHub - Home"
+t.TextColor3 = Color3.fromRGB(200, 200, 255)
+t.TextSize = 18
+t.Font = Enum.Font.SourceSansBold
+t.TextXAlignment = Enum.TextXAlignment.Left
+local crf = Instance.new("Frame", mf)
+crf.Size = UDim2.new(1, 0, 0, 30)
+crf.Position = UDim2.new(0, 0, 1, -30)
+crf.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+crf.BackgroundTransparency = 0.5
+local crc = Instance.new("UICorner", crf)
+crc.CornerRadius = UDim.new(0, 6)
+local crl = Instance.new("TextLabel", crf)
+crl.Size = UDim2.new(0.5, 0, 1, 0)
+crl.Position = UDim2.new(0, 10, 0, 0)
+crl.BackgroundTransparency = 1
+crl.Text = "By GoldBecon"
+crl.TextColor3 = Color3.fromRGB(150, 150, 255)
+crl.TextSize = 12
+crl.Font = Enum.Font.SourceSans
+crl.TextXAlignment = Enum.TextXAlignment.Left
+local crt = Instance.new("TextButton", crf)
+crt.Size = UDim2.new(0.5, -10, 1, 0)
+crt.Position = UDim2.new(0.5, 5, 0, 0)
+crt.BackgroundTransparency = 1
+crt.Text = "Telegram: @Xmkxk"
+crt.TextColor3 = Color3.fromRGB(150, 150, 255)
+crt.TextSize = 12
+crt.Font = Enum.Font.SourceSans
+crt.TextXAlignment = Enum.TextXAlignment.Right
+crt.MouseButton1Click:Connect(function() setclipboard("@Xmkxk") notify("Success", "Telegram copied!", 5) print("[LebroHub] Telegram copied") end)
+
+kb.MouseButton1Click:Connect(function()
+    print("[LebroHub] Key: "..ki.Text)
+    if ki.Text == key then
+        verified = true
+        print("[LebroHub] Key OK")
+        kf.Visible = false
+        mf.Visible = true
+        notify("Success", "Key verified!", 5)
+    else
+        print("[LebroHub] Bad key")
+        notify("Error", "Invalid key. Kicking...", 5)
+        wait(2)
+        plr:Kick("Invalid key! Use: GoldBecon1488")
+    end
+end)
+
+local function btn(n, t, f)
+    local b = Instance.new("TextButton", cf)
+    b.Size = UDim2.new(1, 0, 0, 35)
+    b.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    b.BackgroundTransparency = 0.5
+    b.Text = t.."OFF"
+    b.TextColor3 = Color3.fromRGB(255, 255, 255)
+    b.TextSize = 14
+    b.Font = Enum.Font.SourceSans
+    local c = Instance.new("UICorner", b)
+    c.CornerRadius = UDim.new(0, 6)
+    b.MouseEnter:Connect(function() TweenService:Create(b, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 100)}):Play() end)
+    b.MouseLeave:Connect(function() TweenService:Create(b, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play() end)
+    b.MouseButton1Click:Connect(function()
+        if not verified then notify("Error", "Verify key!", 5) return end
+        _G[n] = not _G[n]
+        b.Text = t..(_G[n] and "ON" or "OFF")
+        b.BackgroundColor3 = _G[n] and Color3.fromRGB(0, 100, 0) or Color3.fromRGB(35, 35, 35)
+        print("[LebroHub] "..n..(_G[n] and " ON" or " OFF"))
+        f(_G[n])
+    end)
+end
+
+_G.af = false
+btn("af", "🔧 Auto Farm: ", function(s)
+    if s then
+        spawn(function()
+            while _G.af and RS:IsRunning() do
+                local p = workspace:FindFirstChild("Plots")
+                if p then
+                    for _, v in pairs(p:GetChildren()) do
+                        if v:IsA("Model") and v:FindFirstChild("Plant") then
+                            local e = RepS:FindFirstChild("Events")
+                            if e then
+                                if e:FindFirstChild("PlantSeed") then e.PlantSeed:FireServer(v) else print("[LebroHub] No PlantSeed") end
+                                if e:FindFirstChild("Harvest") then e.Harvest:FireServer(v) else print("[LebroHub] No Harvest") end
+                            else
+                                print("[LebroHub] No Events")
+                            end
+                        end
+                    end
+                else
+                    print("[LebroHub] No Plots")
+                end
+                task.wait(0.5)
+            end
+            print("[LebroHub] Auto Farm OFF")
+        end)
+    end
+end)
+
+_G.is = false
+btn("is", "🌱 Infinite Seeds: ", function(s)
+    if s then
+        spawn(function()
+            while _G.is and RS:IsRunning() do
+                local g = plr.PlayerGui:FindFirstChild("MainGui")
+                if g and g:FindFirstChild("Seeds") then
+                    g.Seeds.Value = 999999
+                else
+                    print("[LebroHub] No Seeds GUI")
+                end
+                task.wait(1)
+            end
+            print("[LebroHub] Infinite Seeds OFF")
+        end)
+    end
+end)
+
+_G.aw = false
+btn("aw", "💧 Auto Water: ", function(s)
+    if s then
+        spawn(function()
+            while _G.aw and RS:IsRunning() do
+                local p = workspace:FindFirstChild("Plots")
+                if p then
+                    for _, v in pairs(p:GetChildren()) do
+                        if v:IsA("Model") and v:FindFirstChild("Plant") then
+                            local e = RepS:FindFirstChild("Events")
+                            if e and e:FindFirstChild("WaterPlant") then
+                                e.WaterPlant:FireServer(v)
+                            else
+                                print("[LebroHub] No WaterPlant")
+                            end
+                        end
+                    end
+                else
+                    print("[LebroHub] No Plots")
+                end
+                task.wait(1)
+            end
+            print("[LebroHub] Auto Water OFF")
+        end)
+    end
+end)
+
+_G.sb = false
+btn("sb", "⚡ Speed Boost: ", function(s)
+    if s then
+        spawn(function()
+            while _G.sb and RS:IsRunning() do
+                if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+                    plr.Character.Humanoid.WalkSpeed = 32
+                else
+                    print("[LebroHub] No Humanoid")
+                end
+                task.wait(0.1)
+            end
+            if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+                plr.Character.Humanoid.WalkSpeed = 16
+            end
+            print("[LebroHub] Speed Boost OFF")
+        end)
+    end
+end)
+
+_G.ig = false
+btn("ig", "🌿 Instant Grow: ", function(s)
+    if s then
+        spawn(function()
+            while _G.ig and RS:IsRunning() do
+                local p = workspace:FindFirstChild("Plots")
+                if p then
+                    for _, v in pairs(p:GetChildren()) do
+                        if v:IsA("Model") and v:FindFirstChild("Plant") then
+                            local e = RepS:FindFirstChild("Events")
+                            if e and e:FindFirstChild("ForceGrow") then
+                                e.ForceGrow:FireServer(v)
+                            else
+                                print("[LebroHub] No ForceGrow")
+                            end
+                        end
+                    end
+                else
+                    print("[LebroHub] No Plots")
+                end
+                task.wait(0.5)
+            end
+            print("[LebroHub] Instant Grow OFF")
+        end)
+    end
+end)
+
+_G.im = false
+btn("im", "💵 Infinite Money: ", function(s)
+    if s then
+        spawn(function()
+            while _G.im and RS:IsRunning() do
+                local g = plr.PlayerGui:FindFirstChild("MainGui")
+                if g and g:FindFirstChild("Money") then
+                    g.Money.Value = 999999
+                else
+                    print("[LebroHub] No Money GUI")
+                end
+                task.wait(1)
+            end
+            print("[LebroHub] Infinite Money OFF")
+        end)
+    end
+end)
+
+_G.au = false
+btn("au", "⬆ Auto Upgrade: ", function(s)
+    if s then
+        spawn(function()
+            while _G.au and RS:IsRunning() do
+                local e = RepS:FindFirstChild("Events")
+                if e and e:FindFirstChild("Upgrade") then
+                    e.Upgrade:FireServer()
+                else
+                    print("[LebroHub] No Upgrade")
+                end
+                task.wait(2)
+            end
+            print("[LebroHub] Auto Upgrade OFF")
+        end)
+    end
+end)
+
+local sa = Instance.new("TextButton", cf)
+sa.Size = UDim2.new(1, 0, 0, 35)
+sa.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+sa.BackgroundTransparency = 0.5
+sa.Text = "💰 Sell All"
+sa.TextColor3 = Color3.fromRGB(255, 255, 255)
+sa.TextSize = 14
+sa.Font = Enum.Font.SourceSans
+local sac = Instance.new("UICorner", sa)
+sac.CornerRadius = UDim.new(0, 6)
+sa.MouseEnter:Connect(function() TweenService:Create(sa, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(50, 50, 100)}):Play() end)
+sa.MouseLeave:Connect(function() TweenService:Create(sa, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 35, 35)}):Play() end)
+sa.MouseButton1Click:Connect(function()
+    if not verified then notify("Error", "Verify key!", 5) return end
+    print("[LebroHub] Sell All")
+    spawn(function()
+        local b = plr:FindFirstChild("Backpack")
+        if b then
+            for _, i in pairs(b:GetChildren()) do
+                if i:IsA("Tool") and i.Name:match("Crop") then
+                    local e = RepS:FindFirstChild("Events")
+                    if e and e:FindFirstChild("SellCrop") then
+                        e.SellCrop:FireServer(i)
+                    else
+                        print("[LebroHub] No SellCrop")
+                    end
+                end
+            end
+            notify("Success", "Crops sold!", 5)
+        else
+            print("[LebroHub] No Backpack")
+            notify("Error", "No Backpack!", 5)
+        end
+    end)
+end)
+
+mf.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        local p = i.Position
+        local fp = mf.AbsolutePosition
+        if p.X >= fp.X and p.X <= fp.X + 60 and p.Y >= fp.Y and p.Y <= fp.Y + 50 then
+            drag = true
+            dragStart = p
+            startPos = mf.Position
+            print("[LebroHub] Drag start")
+        end
+    end
+end)
+mf.InputChanged:Connect(function(i)
+    if drag and i.UserInputType == Enum.UserInputType.MouseMovement then
+        local d = i.Position - dragStart
+        mf.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + d.X, startPos.Y.Scale, startPos.Y.Offset + d.Y)
+    end
+end)
+mf.InputEnded:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        drag = false
+        print("[LebroHub] Drag end")
+    end
+end)
+
+local cir = Instance.new("ImageButton", gui)
+cir.Size = UDim2.new(0, 50, 0, 50)
+cir.Position = UDim2.new(0, 10, 0, 10)
+cir.BackgroundTransparency = 1
+cir.Image = Players:GetUserThumbnailAsync(plr.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
+cir.Visible = false
+cir.ZIndex = 1000
+local cc = Instance.new("UICorner", cir)
+cc.CornerRadius = UDim.new(1, 0)
+local dragCir, cirStartPos
+cir.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragCir = true
+        dragStart = i.Position
+        cirStartPos = cir.Position
+        print("[LebroHub] Circle drag start")
+    end
+end)
+cir.InputChanged:Connect(function(i)
+    if dragCir and i.UserInputType == Enum.UserInputType.MouseMovement then
+        local d = i.Position - dragStart
+        cir.Position = UDim2.new(cirStartPos.X.Scale, cirStartPos.X.Offset + d.X, cirStartPos.Y.Scale, cirStartPos.Y.Offset + d.Y)
+    end
+end)
+cir.InputEnded:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragCir = false
+        print("[LebroHub] Circle drag end")
+    end
+end)
+cir.MouseButton1Click:Connect(function()
+    min = not min
+    mf.Visible = not min
+    cir.Visible = min
+    TweenService:Create(cir, TweenInfo.new(0.3), {Size = min and UDim2.new(0, 50, 0, 50) or UDim2.new(0, 0, 0, 0)}):Play()
+    print("[LebroHub] "..(min and "Minimized" or "Restored"))
+end)
+
+local rb = Instance.new("TextButton", mf)
+rb.Size = UDim2.new(1, 0, 0, 20)
+rb.Position = UDim2.new(0, 0, 1, -50)
+rb.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+rb.BackgroundTransparency = 0.5
+rb.Text = "↕"
+rb.TextColor3 = Color3.fromRGB(255, 255, 255)
+rb.TextSize = 14
+rb.Font = Enum.Font.SourceSansBold
+rb.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        resize = true
+        resizeStart = i.Position
+        startSize = mf.Size
+        print("[LebroHub] Resize start")
+    end
+end)
+rb.InputChanged:Connect(function(i)
+    if resize and i.UserInputType == Enum.UserInputType.MouseMovement then
+        local d = i.Position - resizeStart
+        mf.Size = UDim2.new(startSize.X.Scale, startSize.X.Offset, startSize.Y.Scale, math.clamp(startSize.Y.Offset + d.Y, 200, 500))
+    end
+end)
+rb.InputEnded:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        resize = false
+        print("[LebroHub] Resize end")
+    end
+end)
+
+local mb = Instance.new("TextButton", mf)
+mb.Size = UDim2.new(0, 30, 0, 30)
+mb.Position = UDim2.new(1, -40, 0, 5)
+mb.BackgroundTransparency = 1
+mb.Text = "−"
+mb.TextColor3 = Color3.fromRGB(200, 200, 255)
+mb.TextSize = 18
+mb.Font = Enum.Font.SourceSansBold
+mb.MouseButton1Click:Connect(function()
+    min = true
+    mf.Visible = false
+    cir.Visible = true
+    TweenService:Create(cir, TweenInfo.new(0.3), {Size = UDim2.new(0, 50, 0, 50)}):Play()
+    print("[LebroHub] Minimized")
+end)
+
+print("[LebroHub] Init")
+notify("LebroHub", "Loaded! Key: GoldBecon1488", 5)
