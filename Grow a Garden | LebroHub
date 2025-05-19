@@ -50,6 +50,11 @@ local function notify(t, c, d)
     n:Destroy()
 end
 
+if game.PlaceId ~= placeId then
+    notify("Error", "LebroHub only for Grow a Garden!", 5)
+    return
+end
+
 local kf = Instance.new("Frame", gui)
 kf.Size = UDim2.new(0, 280, 0, 180)
 kf.Position = UDim2.new(0.5, -140, 0.5, -90)
@@ -185,9 +190,7 @@ kb.MouseButton1Click:Connect(function()
         notify("Success", "Key verified!", 5)
     else
         print("[LebroHub] Bad key")
-        notify("Error", "Invalid key. Kicking...", 5)
-        wait(2)
-        plr:Kick("Invalid key! Use: GoldBecon1488")
+        notify("Error", "Invalid key!", 5)
     end
 end)
 
